@@ -59,14 +59,19 @@ def extrair_informacoes_pdf(caminho_pdf):
         elif "DESCRIÇÃO" in linha:
             descricao = dados["DESCRIÇÃO"] = linhas[i+21].strip()
             j = i + 1
-            while j < len(linhas):
-                dados["DESCRIÇÃO"] = linhas[i+21].strip()
-                if any(linha_chave in linhas[j] for linha_chave in dados.keys()):
-                    break
-                
-                j += 1
-
-                dados["DESCRIÇÃO"] += descricao.strip()
+            descricao = ''
+            j = i + 21
+            if len(linhas) < 141:
+                descricao = linhas[i+21].strip()   # Apenas uma linha de descrição
+            else:
+                while j < len(linhas):
+                    descricao += linhas[j].strip()+ ', '
+                    j += 13
+                    print(j)
+                    if j > len(linhas):
+                        break  # Encerra a captura se encontrar uma nova chave
+                     # Adiciona a linha e um espaço
+            dados["DESCRIÇÃO"] = descricao.strip()  # Remove espaços extras do início e fim
         
         elif "QUANT" in linha:
             dados["QUANT"] = linhas[i+20].strip()
